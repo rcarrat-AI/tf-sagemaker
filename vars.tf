@@ -12,7 +12,7 @@ variable "instance_type" {
 }
 
 variable "name" {
-  default = "jp-tf"
+  default = "sage-tf"
 }
 
 variable "vpc_cidr" {
@@ -20,18 +20,6 @@ variable "vpc_cidr" {
 }
 
 variable "subnet_cidr" {
-  type    = string
-  default = "10.0.0.0/24"
+  type    = list(any)
+  default = ["10.0.0.0/24", "10.0.1.0/24"]
 }
-
-variable "spot_price" {
-  type    = string
-  default = "0.3636"
-}
-
-variable "ebs_disk_size" {
-  type    = string
-  default = "100"
-}
-
-

@@ -8,11 +8,14 @@ resource "aws_vpc" "vpc_sagemaker" {
   cidr_block = var.vpc_cidr
 }
 
-# Create subnets within the VPC
+# Create subnets within the VPC using var.subnet_cidr
 resource "aws_subnet" "subnet_sagemaker" {
-  count      = 2
-  cidr_block = var.subnet_cidr
-  vpc_id     = aws_vpc.vpc_sagemaker.id
+  count = length(var.subnet_cidr)
+
+  # Use var.subnet_cidr to specify CIDR blocks
+  cidr_block = element(var.subnet_cidr, count.index)
+
+  vpc_id = aws_vpc.vpc_sagemaker.id
 }
 
 # Create an IAM role for SageMaker Studio
@@ -35,7 +38,7 @@ resource "aws_iam_role" "sagemaker_studio_role" {
   # Attach AmazonSageMakerFullAccess policy and add 'sagemaker:CreateApp' permission
   inline_policy {
     name = "sagemaker-studio-custom-policy"
-    
+
     policy = jsonencode({
       Version = "2012-10-17",
       Statement = [
@@ -48,6 +51,7 @@ resource "aws_iam_role" "sagemaker_studio_role" {
         }
       ]
     })
+  }
 }
 
 # Attach AmazonSageMakerFullAccess policy to the IAM role
